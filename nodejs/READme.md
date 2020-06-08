@@ -1,1 +1,0 @@
-This is a folder for the node.js project of the stage 3 microservice task
