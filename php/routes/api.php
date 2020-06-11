@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Controllers\PagesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,16 +15,12 @@ use Illuminate\Support\Facades\Storage;
 */
 
 // end point to add a page
-Route::post('add_page', 'PagesController@set_page_markdown');
+Route::post('add_page', 'PagesController@set_page');
 // end point to set a page markdown
-Route::post('set_page_markdown', 'PagesController@set_page_markdown');
+Route::post('set_markdown_page', 'PagesController@set_page');
 // this endpoint will take care of retrieving the html format of the markdown file
-Route::get('retrieve_page_html', 'PagesController@retrieve_page_html');
+Route::get('retrieve_html_page', 'PagesController@retrieve_html_page');
 // this endpoint will take care of retrieving the markdown format of the  file
-Route::get('retrieve_page_markdown', 'PagesController@retrieve_page_markdown');
+Route::get('retrieve_markdown_page', 'PagesController@retrieve_markdown_page');
 // this endpoint will return the list of all pages in storage
 Route::get('list_pages', 'PagesController@list_pages');
-
-Route::get('download_markdown_file', function() {
-    return response()->json(['message' => 'your file has downloaded'], 200, []);
-});

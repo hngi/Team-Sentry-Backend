@@ -2,74 +2,77 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PagesResource;
+use App\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\HtmlString;
 use GrahamCampbell\Markdown\Facades\Markdown;
+use Illuminate\Support\Facades\Redis;
 
 class PagesController extends Controller
 {
-
     // This function will take care of creating the file and writing the markdown content to it.
     // the content will be automatically overwritten when the /set_content_markdown is hit
 
-    public function set_page_markdown(Request $request)
-    {
-        // retrieve title and content from request payload
-        $title = $request->input('page_title');
-        $content = $request->input('page_content');
-
+    public function set_page(Request $request) {
         try {
+            $title = $request->input('page_title');
+            $content = $request->input('page_content');
+            
             // this will create a file on local storage with the markdown extension
-            if($title) {
-                Storage::put($title . '.md', $content);
-                return response()->json(['message' => 'Your page has been added successfully']);
+            if ($title) {
+                if(Storage::put('markdown/'.$title.'.md', $content)){
+                    $html = Markdown::convertToHtml($content);
+                    Storage::put('html/'.$title.'.html', '<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>'.$title.'</title>
+    </head>
+    <body>
+    '.$html.'
+    </body>
+    </html>');
+                    return response()->json(['message' => 'Your page has been created successfully'], 201);
+                } else {
+                    return response()->json(['errors' => 'Failed to create your page, please try again correctly'], 500);
+                }
             } else {
                 return response()->json(['errors' => 'Sorry, the page title is required']);
             }
 
-            if($request->hasFile('file')) {
+            if ($request->hasFile('file')) {
                 if ($request->file('file')->isValid()) {
                     $file = $request->file('file');
-                    Storage::put($file);
+                    Storage::put('markdown/'.$file);
                     return response()->json(['message' => 'Your file has been uploaded successfully']);
                 } else {
                     return response()->json(['errors' => 'The upload process had some errors, please try again']);
                 }
             }
+        
         } catch (\Exception $e) {
-            // return error response to the user
-            return response()->json(['error' => $e]);
+            return response()->json(['errors' => $e], 500);
         }
     }
 
-    public function retrieve_page_html(Request $request) {
-        $title = $request->input('page_title');
-        try {
-            if($title) {
-                if (Storage::exists($title . '.md')) {
-                    $markdown = Storage::get($title . '.md');
-                    $html = Markdown::convertToHtml($markdown);
-                    return response()->json(['html_response' => $html]);
-                } else {
-                    return response()->json(['errors' => 'The page you requested for does not exist.'], 404);
-                }
-            } else {
-                return response()->json(['errors' => 'Sorry, the page title is required']);
-            }
-        } catch (\Exception $e) {
-            return response()->json(['errors' => $e]);
-        }
-    }
-
-    public function retrieve_page_markdown(Request $request)
+    public function retrieve_html_page(Request $request)
     {
         $title = $request->input('page_title');
         try {
             if ($title) {
-                if (Storage::exists($title . '.md')) {
-                    $markdown = Storage::get($title . '.md');
-                    return response()->json(['html_response' => $markdown]);
+                if (Storage::exists('html/'.$title.'.html')) {
+                    $html = Storage::get('html/'.$title.'.html');
+                    return response()->json([
+                        'page_info' => [
+                            'url' => Storage::url('files/html/' . $title.'.html'),
+                            'title' => $title,
+                            'format' => 'html page',
+                            'file_size' => filesize(storage_path('app/public/files/html/' . $title.'.html')),
+                            'html' => $html
+                        ]
+                    ]);
                 } else {
                     return response()->json(['errors' => 'The page you requested for does not exist.'], 404);
                 }
@@ -77,17 +80,46 @@ class PagesController extends Controller
                 return response()->json(['errors' => 'Sorry, the page title is required']);
             }
         } catch (\Exception $e) {
-            return response()->json(['errors' => $e]);
+            return response()->json(['errors' => $e], 500);
         }
     }
 
-    public function list_pages() {
-        $files = array_slice(scandir(storage_path('app/files')), 2);
+    public function retrieve_markdown_page(Request $request)
+    {
+        // get the page title
+        $title = $request->input('page_title');
+        try {
+            if ($title) {
+                if (Storage::exists('markdown/'.$title.'.md')) {
+                    $markdown = Storage::get('markdown/'.$title.'.md');
+                    return response()->json([
+                        'page_info' => [
+                            'url' => Storage::url('files/markdown/' . $title.'.md'),
+                            'title' => $title,
+                            'format' => 'markdown file',
+                            'file_size' => filesize(storage_path('app/public/files/markdown/' . $title.'.md')),
+                            'markdown' => $markdown
+                        ]
+                    ]);
+                } else {
+                    return response()->json(['errors' => 'The page you requested for does not exist.'], 404);
+                }
+            } else {
+                return response()->json(['errors' => 'Sorry, the page title is required']);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['errors' => $e], 500);
+        }
+    }
 
-        if(count($files)){
+    public function list_pages()
+    {
+        $files = array_slice(scandir(storage_path('app/public/files/markdown')), 2);
+
+        if (count($files)) {
             return response()->json(['pages' => $files]);
         } else {
             return response()->json(['pages' => 'Sorry, you have not saved any pages with us']);
-        }  
+        }
     }
 }
