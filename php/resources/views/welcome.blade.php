@@ -49,6 +49,16 @@
     <body>
         <div class="flex-center position-ref full-height">
             <div class="content">
+                <h2>Static Page Generator</h2>
+                <p>Welcome to the api that enables you to generate static pages like html and markdown.</p>
+                <p>The api will enable you create static pages (markdown and html) , store them for you and you can have them anytime.<br/>This is a documentation on how to use it.</p>
+                <p>All the response payload is in json format with a format like so;</p>
+                <code>
+                    {
+    'message':
+        "response payload here"
+}
+                </code>
                 <div>
                     @markdown($html)
                 </div>
