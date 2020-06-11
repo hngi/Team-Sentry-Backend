@@ -1,6 +1,8 @@
 <?php
 
+use Dotenv\Store\StoreInterface;
 use Illuminate\Support\Facades\Route;
+use GrahamCampbell\Markdown\Facades\Markdown;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +16,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $content = file_get_contents(storage_path('app/public/files/README.md'));
+    return view('welcome', ['html' => $content]);
 });
