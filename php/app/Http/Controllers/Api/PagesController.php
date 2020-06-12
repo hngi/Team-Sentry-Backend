@@ -51,7 +51,10 @@ class PagesController extends Controller
                 if ($request->file('file')->isValid()) {
                     $file = $request->file('file');
                     Storage::put('markdown/'.$file);
-                    return response()->json(['message' => 'Your file has been uploaded successfully']);
+                    return response()->json([
+                        'author' => auth()->user()->name,
+                        'message' => 'Your file has been uploaded successfully'
+                        ]);
                 } else {
                     return response()->json(['errors' => 'The upload process had some errors, please try again']);
                 }
@@ -71,6 +74,7 @@ class PagesController extends Controller
                     $html = Storage::get('html/'.$title.'.html');
                     return response()->json([
                         'page_info' => [
+                            'author' => auth()->user()->name,
                             'url' => Storage::url('files/html/' . $title.'.html'),
                             'title' => $title,
                             'format' => 'html page',
@@ -99,6 +103,7 @@ class PagesController extends Controller
                     $markdown = Storage::get('markdown/'.$title.'.md');
                     return response()->json([
                         'page_info' => [
+                            'author' => auth()->user()->name,
                             'url' => Storage::url('files/markdown/' . $title.'.md'),
                             'title' => $title,
                             'format' => 'markdown file',
@@ -122,9 +127,19 @@ class PagesController extends Controller
         $files = array_slice(scandir(storage_path('app/public/files/markdown')), 2);
 
         if (count($files)) {
-            return response()->json(['pages' => $files]);
+            return response()->json([
+                'author' => auth()->user()->name,
+                'pages' => $files]);
         } else {
             return response()->json(['pages' => 'Sorry, you have not saved any pages with us']);
         }
+    }
+
+    public function get_docs() {
+        $path = Storage::url('files/markdown/docs.md');
+        return response()->json([
+            'author' => auth()->user()->name,
+            'documentation' => $path
+        ]);
     }
 }

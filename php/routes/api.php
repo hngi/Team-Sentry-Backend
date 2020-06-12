@@ -23,11 +23,13 @@ Route::group([
     // end point to add a page
     Route::post('add_page', 'Api\PagesController@set_page');
     // end point to set a page markdown
-    Route::post('set_markdown_page', 'Api\PagesController@set_page');
+    Route::post('set_page_markdown', 'Api\PagesController@set_page');
     // this endpoint will take care of retrieving the html format of the markdown file
     Route::get('retrieve_html_page', 'Api\PagesController@retrieve_html_page');
     // this endpoint will take care of retrieving the markdown format of the  file
     Route::get('retrieve_markdown_page', 'Api\PagesController@retrieve_markdown_page');
     // this endpoint will return the list of all pages in storage
     Route::get('list_pages', 'Api\PagesController@list_pages');
+
+    Route::get('/', 'Api\PagesController@get_docs');
 });

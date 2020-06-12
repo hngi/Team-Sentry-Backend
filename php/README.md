@@ -1,7 +1,7 @@
-# Team -Sentry Backend task with PHP
+# Team -Sentry Backend Task
 
-Welcome to the static page generator API created by the PHP people of team-sentry.
-<br/>This api will enable you create static pages (markdown and html) , store them for you and you can have them anytime.
+Welcome to the static page generator API.
+<br/> This api will enable you create static pages (markdown and html) , store them for you and you can have them anytime.
 
 All the urls return responses in json format, like so;
 
@@ -14,11 +14,13 @@ All the urls return responses in json format, like so;
 
 ## How to use it
 
+You will have to create an account with us the head to the dashboard and create your API Key that you will use to make calls to the api
+
 The api uses four major endpoints as explained below. <br/>
 All request are sent to;
 
 ```yaml
-http://server-url/api/
+http://server-url/api/v1/
 ```
 
 ### To upload a markdowm file
@@ -26,13 +28,13 @@ http://server-url/api/
 To upload a markdown file, send a POST request to;
 
 ```yaml
-http://server-url/api/add_page?file=file-here
+http://server-url/api/v1/add_page?file=file-here
 ```
 
-If you dont have a markdown file we can create one for you by specifying a file titile and it's contents like so;
+If you dont have a markdown file we can create one for you by specifying a file title and it's contents like so;
 
 ```yaml
-http://server-url/api/add_page?page_title=page-title-here&page_content=page-content-here
+http://server-url/api/v1/add_page?page_title=page-title-here&page_content=page-content-here
 ```
 
 We shall create the file for you and keep for you.
@@ -42,7 +44,7 @@ We shall create the file for you and keep for you.
 If you have a file with us already, send a POST request to this endpoint specifying the title and the content you want to write and it shall be done;
 
 ```yaml
-http://server-url/api/set_page_markdown?page_title=page-title-here&page_content=page-content-here
+http://server-url/api/v1/set_page_markdown?page_title=page-title-here&page_content=page-content-here
 ```
 
 ### To get html
@@ -50,7 +52,7 @@ http://server-url/api/set_page_markdown?page_title=page-title-here&page_content=
 To get the html equivalent of your markdown file, send a GET request to this endpoint to get your html. The page title must be set.
 
 ```yaml
-http://server-url/api/retrieve_html_page?page_title=page-title-here
+http://server-url/api/v1/retrieve_html_page?page_title=page-title-here
 ```
 
 ### To get markdown
@@ -58,7 +60,7 @@ http://server-url/api/retrieve_html_page?page_title=page-title-here
 To get the markdown text, send a GET request to this endpoint. The page title must be set.
 
 ```yaml
-http://server-url/api/retrieve_markdown_page?page_title=page-title-here
+http://server-url/api/v1/retrieve_markdown_page?page_title=page-title-here
 ```
 
 ### To get a list of pages stored with us
@@ -66,7 +68,7 @@ http://server-url/api/retrieve_markdown_page?page_title=page-title-here
 Send a GET request to this endpoint to get a list of all the pages you have stored with us;
 
 ```yaml
-http://server-url/api/list_pages
+http://server-url/api/v1/list_pages
 ```
 
 ## Errors
