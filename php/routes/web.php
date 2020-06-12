@@ -25,7 +25,3 @@ Auth::routes();
 
 Route::get('/home', 'Web\HomeController@index')->name('home');
 
-Route::get('/generate_key', 'Web\ApiController@generate_key')->name('generate-key');
-
-Route::get('/reveal_tokens', 'Web\ApiController@reveal_token')->name('reveal-tokens');
-

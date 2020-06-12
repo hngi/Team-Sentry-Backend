@@ -9,14 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ApiController extends Controller
 {
-    public function generate_key() {
-        $id = Auth::id();
-        $user = User::find($id);
-        $token = $user->createToken('personal-token')->accessToken;
-        return view('home', ['token' => $token]);
-    }
 
-    public function reveal_tokens(){
-        
-    }
+
 }

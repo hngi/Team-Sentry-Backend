@@ -16,7 +16,10 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::middleware(['auth:api'])->group(function() {
+Route::group([
+    'middleware' => 'auth:api',
+    'prefix' => 'v1'
+], function() {
     // end point to add a page
     Route::post('add_page', 'Api\PagesController@set_page');
     // end point to set a page markdown
