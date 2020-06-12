@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\PagesResource;
 use App\Page;
@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Support\Facades\Redis;
+use App\Http\Controllers\Controller;
 
 class PagesController extends Controller
 {
@@ -22,7 +23,11 @@ class PagesController extends Controller
             // this will create a file on local storage with the markdown extension
             if ($title) {
                 if(Storage::put('markdown/'.$title.'.md', $content)){
-                    $html = Markdown::convertToHtml($content);
+                    if($content) {
+                        $html = Markdown::convertToHtml($content);
+                    } else {
+                        $html = "";
+                    }
                     Storage::put('html/'.$title.'.html', '<!DOCTYPE html>
     <html lang="en">
     <head>

@@ -1,7 +1,9 @@
 <?php
 
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,13 +16,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// end point to add a page
-Route::post('add_page', 'PagesController@set_page');
-// end point to set a page markdown
-Route::post('set_markdown_page', 'PagesController@set_page');
-// this endpoint will take care of retrieving the html format of the markdown file
-Route::get('retrieve_html_page', 'PagesController@retrieve_html_page');
-// this endpoint will take care of retrieving the markdown format of the  file
-Route::get('retrieve_markdown_page', 'PagesController@retrieve_markdown_page');
-// this endpoint will return the list of all pages in storage
-Route::get('list_pages', 'PagesController@list_pages');
+Route::middleware(['auth:api'])->group(function() {
+    // end point to add a page
+    Route::post('add_page', 'Api\PagesController@set_page');
+    // end point to set a page markdown
+    Route::post('set_markdown_page', 'Api\PagesController@set_page');
+    // this endpoint will take care of retrieving the html format of the markdown file
+    Route::get('retrieve_html_page', 'Api\PagesController@retrieve_html_page');
+    // this endpoint will take care of retrieving the markdown format of the  file
+    Route::get('retrieve_markdown_page', 'Api\PagesController@retrieve_markdown_page');
+    // this endpoint will return the list of all pages in storage
+    Route::get('list_pages', 'Api\PagesController@list_pages');
+});

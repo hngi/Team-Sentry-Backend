@@ -3,6 +3,8 @@
 use Dotenv\Store\StoreInterface;
 use Illuminate\Support\Facades\Route;
 use GrahamCampbell\Markdown\Facades\Markdown;
+use Illuminate\Support\Facades\Auth;
+use App\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +18,14 @@ use GrahamCampbell\Markdown\Facades\Markdown;
 */
 
 Route::get('/', function () {
-    $content = file_get_contents(storage_path('app/public/files/README.md'));
-    return view('welcome', ['html' => $content]);
+    return view('welcome');
 });
+
+Auth::routes();
+
+Route::get('/home', 'Web\HomeController@index')->name('home');
+
+Route::get('/generate_key', 'Web\ApiController@generate_key')->name('generate-key');
+
+Route::get('/reveal_tokens', 'Web\ApiController@reveal_token')->name('reveal-tokens');
+
