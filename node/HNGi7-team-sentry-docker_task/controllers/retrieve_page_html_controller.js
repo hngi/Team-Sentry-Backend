@@ -1,11 +1,10 @@
 const router = require("express").Router(),
             request = require("request"),
-            Data = require("../Resources/database/database"),
+            Data = require("../config/database/database"),
             Config = require("../config/config"),
             mongoose = require("mongoose");
 
-
-router.get("/retrieve_page_html", (req, res) => {
+router.get("/retrieve_page_html", require("../config/Auth/authenticate"), (req, res) => {
     //REQUIRED
     // url
     //type

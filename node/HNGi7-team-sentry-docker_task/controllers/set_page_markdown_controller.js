@@ -2,15 +2,14 @@ const router = require("express").Router(),
             showdown = require("showdown"),
             request = require("request"),
             turndown = require("turndown"),
-            Data = require("../Resources/database/database"),
+            Data = require("../config/database/database"),
             Config = require("../config/config"),
             mongoose = require("mongoose");
-
 
 const converter = new turndown();
 const showDown = new showdown.Converter();
 //first get the requested page 
-router.get("/set_page_markdown", (req, res) => {
+router.get("/set_page_markdown", require("../config/Auth/authenticate"), (req, res) => {
     //url for requests on external links
     const page = req.query.type;
     if (page == "external") {
@@ -47,7 +46,8 @@ router.post("/set_page_markdown:page_id", (req, res) => {
     }
     else{
         res.status(503).json({
-            status: "No database connection established"
+            statua: "fail",
+            message: "title or body cannot be empty"
         })
     }
 })
