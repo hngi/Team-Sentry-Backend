@@ -1,11 +1,11 @@
 const router = require("express").Router(),
-            Data = require("../Resources/database/database"),
+            Data = require("../config/database/database"),
             Config = require("../config/config"),
             mongoose = require("mongoose");
 
 router.use(require("body-parser").urlencoded({extended:true}))
 
-router.post("/add_page", (req, res) => {
+router.post("/add_page", require("../config/Auth/authenticate"), (req, res) => {
    if(mongoose.connection.readyState == 1){
        const title = req.body.title,
            content = req.body.content;
@@ -15,9 +15,17 @@ router.post("/add_page", (req, res) => {
                    content: content
                })
                data.save((err, success) => {
-                   if (err)
-                       res.send("Something went wrong!!! : " + error);
-                   res.send(200).json({ status: "success" });
+                   if (err){
+                       res.status(500).json({
+                           status: "fail",
+                           message: "Something went wrong, it's not you, it's us."
+                       });
+                   }else{
+                        res.status(200).json({ 
+                            status: "successfully added new page",
+                            page: success
+                        });
+                   }
                })
            }else{
                res.status(503).json({
@@ -27,8 +35,8 @@ router.post("/add_page", (req, res) => {
            }
    }
    else{
-       res.status(503).json({
-           status: "No database connection established"
+       res.status(500).json({
+           status: "Error establishing database connection"
        })
    }
 })
